@@ -14,8 +14,8 @@ export default styled.div`
         height: calc(320px / 3);
     }
 
-    @media (max-width: 375px) {
-        height: calc(375px / 3);
+    @media (max-width: 462px) {
+        height: calc(462px / 3);
     }
 
     border-bottom: 4px solid #7E7E7E;

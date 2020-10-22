@@ -10,6 +10,7 @@ const SET_WINNDER = 'setWinner'
 const RESTART = 'restat'
 const INVALID_CLICK = 'setInvalidClick'
 const SET_PAYER_NAMES = 'setPayerNames'
+const SET_WIN_DIALOGUE = 'setResultDialogue'
 
 const initalBoard = [
   [null, null, null],
@@ -90,6 +91,13 @@ const reducer = (state, action) => {
         playerNames: action.names
       }
     }
+    case SET_WIN_DIALOGUE: {
+      return {
+        ...state,
+        resultTitle: action.title,
+        resultMessage: action.message
+      }
+    }
     default:
       throw new Error()
   }
@@ -98,7 +106,16 @@ const reducer = (state, action) => {
 const TicTacToe = ({ mode, onEndGame = () => false }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const { board, winner, deadlock, currentPlayer, invalidMoveMessage, invalidMovePosition } = state
+  const {
+    board,
+    winner,
+    deadlock,
+    currentPlayer,
+    invalidMoveMessage,
+    invalidMovePosition,
+    resultTitle,
+    resultMessage
+  } = state
 
   useEffect(() => {
     if (mode === MODES.COMPUTER &&
@@ -118,6 +135,24 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
       setPlayerNames('Player 0', 'Player 1')
     }
   }, [mode])
+
+  useEffect(() => {
+    let title = ''
+    let message = ''
+    if (mode === MODES.COMPUTER && currentPlayer === 1) {
+      title = 'You lost!'
+      message = 'Opps, Try agein!'
+    } else if (mode === MODES.COMPUTER && currentPlayer === 0) {
+      title = 'You won!'
+      message = 'Congratulations!'
+    }
+    dispatch({
+      type: SET_WIN_DIALOGUE,
+      title,
+      message
+    })
+    // eslint-disable-next-line
+  }, [winner])
 
   const setPlayerNames = (firstPlayerName, secondPlayerName) => dispatch({
     type: SET_PAYER_NAMES,
@@ -181,9 +216,9 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
       }
       {winner && (
         <Modal actions={modalActions}>
-          <h1>Winner!</h1>
+          <h1>{resultTitle}</h1>
           <p>
-            Player {currentPlayer} won this game!! <strong>congratulations!!</strong>
+            <strong>{resultMessage}</strong>
           </p>
         </Modal>
       )}
