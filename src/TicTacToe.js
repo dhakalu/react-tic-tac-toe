@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react'
+import React, { useReducer } from 'react'
 import Row from './components/Row'
 import { checkIfWineer } from './utils'
 import Modal from './components/Modal/Modal'
