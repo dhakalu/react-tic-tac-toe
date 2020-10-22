@@ -4,10 +4,10 @@ import Avatar from './Avatar.styles'
 
 const ENTER_CHAR_CODE = 13
 
-const Tile = ({ item, id, onTileClick }) => {
+const Tile = ({ item, rowId, columnId, onTileClick, invalidMoveMessage, invalidMovePosition }) => {
   const handleKeyPress = (event) => {
     if (event.charCode === ENTER_CHAR_CODE) {
-      onTileClick(id)
+      onTileClick(rowId, columnId)
     }
   }
 
@@ -19,7 +19,7 @@ const Tile = ({ item, id, onTileClick }) => {
   return (
     <TileWrapper
       className={classNames.join(' ')}
-      onClick={() => onTileClick(id)}
+      onClick={() => onTileClick(rowId, columnId)}
       role='button'
       tabIndex={0}
       onKeyPress={handleKeyPress}
@@ -27,6 +27,13 @@ const Tile = ({ item, id, onTileClick }) => {
       <div>
         {
           item && <Avatar choice={item}>{item === '0' ? 'O' : 'X'}</Avatar>
+        }
+        {
+          invalidMovePosition && invalidMovePosition[0] === rowId && invalidMovePosition[1] === columnId && (
+            <div className='error-message'>
+              {invalidMoveMessage}
+            </div>
+          )
         }
       </div>
     </TileWrapper>

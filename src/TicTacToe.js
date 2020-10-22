@@ -8,6 +8,8 @@ const SET_DEAD_LOCK = 'setDeadlock'
 const SET_CURRENT_PLAYER = 'setCurrentPlayer'
 const SET_WINNDER = 'setWinner'
 const RESTART = 'restat'
+const INVALID_CLICK = 'setInvalidClick'
+const SET_PAYER_NAMES = 'setPayerNames'
 
 const initalBoard = [
   [null, null, null],
@@ -18,7 +20,7 @@ const initalBoard = [
 const initialState = {
   board: initalBoard,
   winner: '',
-  currentPlayer: 1,
+  currentPlayer: 0,
   deadlock: false
 }
 
@@ -28,7 +30,13 @@ const reducer = (state, action) => {
       const { row, column } = action
       const currentBoard = [...state.board]
       const currentRow = [...currentBoard[row]]
-      if (currentRow[column]) return state
+      if (currentRow[column]) {
+        return {
+          ...state,
+          invalidMoveMessage: 'Already Taken',
+          invalidMovePosition: [row, column]
+        }
+      }
       currentRow[column] = `${state.currentPlayer}`
       currentBoard[row] = currentRow
       const {
@@ -40,7 +48,9 @@ const reducer = (state, action) => {
         board: currentBoard,
         winner: isWinner ? `${state.currentPlayer}` : '',
         deadlock: isDeadlock,
-        currentPlayer: (isWinner || isDeadlock) ? state.currentPlayer : (state.currentPlayer + 1) % 2
+        currentPlayer: (isWinner || isDeadlock) ? state.currentPlayer : (state.currentPlayer + 1) % 2,
+        invalidMoveMessage: '',
+        invalidMovePosition: [-1, -1]
       }
     }
     case SET_DEAD_LOCK: {
@@ -66,6 +76,20 @@ const reducer = (state, action) => {
         ...initialState
       }
     }
+    case INVALID_CLICK: {
+      const { row, column, message } = action
+      return {
+        ...state,
+        invalidMoveMessage: message,
+        invalidMovePosition: [row, column]
+      }
+    }
+    case SET_PAYER_NAMES: {
+      return {
+        ...state,
+        playerNames: action.names
+      }
+    }
     default:
       throw new Error()
   }
@@ -74,21 +98,11 @@ const reducer = (state, action) => {
 const TicTacToe = ({ mode, onEndGame = () => false }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const { board, winner, deadlock, currentPlayer } = state
-
-  const restart = () => dispatch({ type: RESTART })
-
-  const setChoice = (row, column) => {
-    dispatch({
-      type: SET_CHOICE,
-      row,
-      column
-    })
-  }
+  const { board, winner, deadlock, currentPlayer, invalidMoveMessage, invalidMovePosition } = state
 
   useEffect(() => {
-    if (mode === MODES.COMPUTER
-        && currentPlayer === 0) {
+    if (mode === MODES.COMPUTER &&
+        currentPlayer === 1) {
       const { row, column } = dumbMove(board)
       setTimeout(() => {
         setChoice(row, column)
@@ -96,6 +110,37 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
     }
     // eslint-disable-next-line
   }, [currentPlayer])
+
+  useEffect(() => {
+    if (mode === MODES.COMPUTER) {
+      setPlayerNames('Player', 'Computer')
+    } else {
+      setPlayerNames('Player 0', 'Player 1')
+    }
+  }, [mode])
+
+  const setPlayerNames = (firstPlayerName, secondPlayerName) => dispatch({
+    type: SET_PAYER_NAMES,
+    names: {
+      0: firstPlayerName,
+      1: secondPlayerName
+    }
+  })
+
+  const restart = () => dispatch({ type: RESTART })
+
+  const setChoice = (row, column) => dispatch({
+    type: SET_CHOICE,
+    row,
+    column
+  })
+
+  const setInvalidClick = (row, column, message) => dispatch({
+    type: INVALID_CLICK,
+    message,
+    row,
+    column
+  })
 
   const modalActions = [
     {
@@ -110,10 +155,11 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
   ]
 
   const handleTileClick = (row, column) => {
-    if (mode === MODES.COMPUTER && currentPlayer === 0) {
-      return '' // its compuer's turn, skip users click
+    if (mode === MODES.COMPUTER && currentPlayer === 1) {
+      setInvalidClick(row, column, 'Wait for turn')
+    } else {
+      setChoice(row, column)
     }
-    setChoice(row, column)
   }
 
   return (
@@ -122,10 +168,13 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
         board.map((row, i) => {
           return (
             <Row
-              currentPlayer={currentPlayer}
-              onTileClick={(column) => handleTileClick(i, column)}
               key={i}
+              rowId={i}
               row={row}
+              currentPlayer={currentPlayer}
+              onTileClick={handleTileClick}
+              invalidMoveMessage={invalidMoveMessage}
+              invalidMovePosition={invalidMovePosition}
             />
           )
         })
@@ -153,6 +202,6 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
 export default TicTacToe
 
 export const MODES = {
-  TWO_PLAYERS: '2',
+  TWO_PLAYERS: 'humanToHuman',
   COMPUTER: 'computer'
 }

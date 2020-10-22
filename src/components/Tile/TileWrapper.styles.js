@@ -35,4 +35,8 @@ export default styled.div`
     &.second {
       background-color: red;
     }
+
+    .error-message {
+      color: #f0f0f0;
+    }
 `

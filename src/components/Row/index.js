@@ -3,17 +3,20 @@ import React from 'react'
 import RowWrapper from './RowWrapper'
 import Tile from '../Tile'
 
-const Row = ({ row, onTileClick }) => {
+const Row = ({ row, rowId, onTileClick, invalidMoveMessage, invalidMovePosition }) => {
   return (
     <RowWrapper>
       {
-        row.map((item, i) => {
+        row.map((column, i) => {
           return (
             <Tile
-              item={item}
               key={i}
+              rowId={rowId}
+              item={column}
               onTileClick={onTileClick}
-              id={i}
+              columnId={i}
+              invalidMoveMessage={invalidMoveMessage}
+              invalidMovePosition={invalidMovePosition}
             />
           )
         })
