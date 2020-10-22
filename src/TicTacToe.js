@@ -91,6 +91,7 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
         setChoice(row, column)
       }, 1000)
     }
+    // eslint-disable-next-line
   }, [currentPlayer])
 
   const modalActions = [
