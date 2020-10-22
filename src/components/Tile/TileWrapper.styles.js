@@ -13,7 +13,6 @@ export default styled.div`
         cursor: pointer;
     }
 
-    border-bottom: 4px solid #7E7E7E;
     &:nth-child(2){
       border-left: 4px solid #7E7E7E;
       border-right: 4px solid #7E7E7E;

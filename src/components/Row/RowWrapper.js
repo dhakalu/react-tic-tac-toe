@@ -8,4 +8,8 @@ export default styled.div`
     @media (min-width: 1029px) {
         width: 1029px;
     }
+    border-bottom: 4px solid #7E7E7E;
+    &:last-child {
+        border-bottom: 0;
+    }
 `

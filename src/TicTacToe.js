@@ -64,7 +64,7 @@ const reducer = (state, action) => {
   }
 }
 
-const TicTacToe = () => {
+const TicTacToe = ({ mode, onEndGame = () => false }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const { board, winner, deadlock, currentPlayer } = state
@@ -84,6 +84,18 @@ const TicTacToe = () => {
     })
   }
 
+  const modalActions = [
+    {
+      label: 'Restart',
+      handleButtonClick: () => restart()
+    },
+    {
+      label: 'End Game',
+      type: 'distroy',
+      handleButtonClick: () => onEndGame()
+    }
+  ]
+
   return (
     <div>
       {
@@ -99,18 +111,7 @@ const TicTacToe = () => {
         })
       }
       {winner && (
-        <Modal actions={[
-          {
-            label: 'Restart',
-            handleButtonClick: () => restart()
-          },
-          {
-            label: 'End Game',
-            type: 'distroy',
-            handleButtonClick: () => window.close()
-          }
-        ]}
-        >
+        <Modal actions={modalActions}>
           <h1>Winner!</h1>
           <p>
             Player {currentPlayer} won this game!! <strong>congratulations!!</strong>
@@ -118,18 +119,7 @@ const TicTacToe = () => {
         </Modal>
       )}
       {deadlock && (
-        <Modal actions={[
-          {
-            label: 'Restart',
-            handleButtonClick: () => restart()
-          },
-          {
-            label: 'End Game',
-            type: 'distroy',
-            handleButtonClick: () => window.close()
-          }
-        ]}
-        >
+        <Modal actions={modalActions}>
           <h1>Draw!</h1>
           <p>
               No one can win this game
