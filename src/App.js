@@ -12,7 +12,6 @@ const App = () => {
   const [mode, setMode] = useState('')
 
   const handleEndGame = () => {
-    alert('Are you sure you want to end game?')
     setMode('')
   }
 

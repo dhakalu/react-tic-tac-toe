@@ -38,9 +38,9 @@ const reducer = (state, action) => {
       return {
         ...state,
         board: currentBoard,
-        winner: isWinner ? state.currentPlayer : '',
+        winner: isWinner ? `${state.currentPlayer}` : '',
         deadlock: isDeadlock,
-        currentPlayer: (state.currentPlayer + 1) % 2
+        currentPlayer: (isWinner || isDeadlock) ? state.currentPlayer : (state.currentPlayer + 1) % 2
       }
     }
     case SET_DEAD_LOCK: {
@@ -62,7 +62,9 @@ const reducer = (state, action) => {
       }
     }
     case RESTART: {
-      return initialState
+      return {
+        ...initialState
+      }
     }
     default:
       throw new Error()
@@ -85,7 +87,8 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
   }
 
   useEffect(() => {
-    if (mode === MODES.COMPUTER && currentPlayer === 1) {
+    if (mode === MODES.COMPUTER
+        && currentPlayer === 0) {
       const { row, column } = dumbMove(board)
       setTimeout(() => {
         setChoice(row, column)
@@ -106,6 +109,13 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
     }
   ]
 
+  const handleTileClick = (row, column) => {
+    if (mode === MODES.COMPUTER && currentPlayer === 0) {
+      return '' // its compuer's turn, skip users click
+    }
+    setChoice(row, column)
+  }
+
   return (
     <div>
       {
@@ -113,7 +123,7 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
           return (
             <Row
               currentPlayer={currentPlayer}
-              onTileClick={(column) => setChoice(i, column)}
+              onTileClick={(column) => handleTileClick(i, column)}
               key={i}
               row={row}
             />
