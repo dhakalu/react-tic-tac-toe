@@ -26,7 +26,7 @@ const Tile = ({ item, id, onTileClick }) => {
     >
       <div>
         {
-          item && <Avatar choice={item}>{item}</Avatar>
+          item && <Avatar choice={item}>{item === '0' ? 'O' : 'X'}</Avatar>
         }
       </div>
     </TileWrapper>

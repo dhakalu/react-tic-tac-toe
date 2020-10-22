@@ -1,15 +1,5 @@
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 
-const rotate = keyframes`
-0% {
-  transform: rotateY(0deg);
-  background-color: blue;
-}
-100% {
-  rotateY(180deg);
-  background-color: green;
-}
-`
 export default styled.div`
     flex: 1;
     min-width: 33.33%;
