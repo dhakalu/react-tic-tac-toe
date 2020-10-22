@@ -36,3 +36,24 @@ export const checkIfWineer = (board) => {
     isDeadlock
   }
 }
+
+const emptyTileFilder = (acc = [], currentValue, currentIndex) => {
+  if (!currentValue) acc.push(currentIndex)
+  return acc
+}
+
+const getPositionFromIndex = index => {
+  const row = Math.floor(index / 3)
+  const column = Math.floor(index % 3)
+  return {
+    row,
+    column
+  }
+}
+
+export const dumbMove = (board) => {
+  const flatBoard = [...board[0], ...board[1], ...board[2]]
+  const emptySpots = flatBoard.reduce(emptyTileFilder, [])
+  const randomIndex = emptySpots[Math.floor(Math.random() * emptySpots.length)]
+  return getPositionFromIndex(randomIndex)
+}

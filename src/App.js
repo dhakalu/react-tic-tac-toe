@@ -3,11 +3,11 @@ import Wrapper from './Wrapper.styles'
 import TicTacToe from './TicTacToe'
 import Modal from './components/Modal/Modal'
 
-const MODES = {
+// todo move to own constants file and remove duplication from TicTacToe.js
+export const MODES = {
   TWO_PLAYERS: '2',
   COMPUTER: 'computer'
 }
-
 const App = () => {
   const [mode, setMode] = useState('')
 
@@ -24,8 +24,7 @@ const App = () => {
     {
       label: 'Aagainst Computer',
       handleButtonClick: () => {
-        // setMode(MODES.COMPUTER)
-        window.alert('This mode is not implemented yet.')
+        setMode(MODES.COMPUTER)
       }
     }
   ]

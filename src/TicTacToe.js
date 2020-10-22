@@ -1,6 +1,6 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import Row from './components/Row'
-import { checkIfWineer } from './utils'
+import { checkIfWineer, dumbMove } from './utils'
 import Modal from './components/Modal/Modal'
 
 const SET_CHOICE = 'setChoice'
@@ -84,6 +84,15 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
     })
   }
 
+  useEffect(() => {
+    if (mode === MODES.COMPUTER && currentPlayer === 1) {
+      const { row, column } = dumbMove(board)
+      setTimeout(() => {
+        setChoice(row, column)
+      }, 1000)
+    }
+  }, [currentPlayer])
+
   const modalActions = [
     {
       label: 'Restart',
@@ -131,3 +140,8 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
 }
 
 export default TicTacToe
+
+export const MODES = {
+  TWO_PLAYERS: '2',
+  COMPUTER: 'computer'
+}
