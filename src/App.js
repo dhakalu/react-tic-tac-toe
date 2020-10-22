@@ -22,7 +22,7 @@ const App = () => {
       handleButtonClick: () => setMode(MODES.TWO_PLAYERS)
     },
     {
-      label: '1 Player (against computer)',
+      label: 'Aagainst Computer)',
       handleButtonClick: () => {
         // setMode(MODES.COMPUTER)
         window.alert('This mode is not implemented yet.')

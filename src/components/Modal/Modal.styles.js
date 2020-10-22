@@ -45,4 +45,8 @@ export default styled.div`
         display: flex;
     }
 
+    & > div {
+        padding: 20px;
+    }
+
 `
