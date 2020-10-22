@@ -1,30 +1,75 @@
-import React, { useState, useEffect } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import Row from './components/Row'
 import { checkIfWineer } from './utils'
 import Modal from './components/Modal/Modal'
 
-const TicTacToe = () => {
-  const initalBoard = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-  ]
+const SET_CHOICE = 'setChoice'
+const SET_DEAD_LOCK = 'setDeadlock'
+const SET_CURRENT_PLAYER = 'setCurrentPlayer'
+const SET_WINNDER = 'setWinner'
+const RESTART = 'restat'
 
-  const [board, setBoard] = useState(initalBoard)
+const initalBoard = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null]
+]
 
-  const [currentPlayer, setCurrentPlayer] = useState(0)
+const initialState = {
+  board: initalBoard,
+  winner: '',
+  currentPlayer: 1,
+  deadlock: false
+}
 
-  const [winner, setWinner] = useState(null)
-
-  useEffect(() => {
-    const isWinner = checkIfWineer(board)
-    if (isWinner) {
-      setWinner(currentPlayer)
-    } else {
-      setCurrentPlayer((currentPlayer + 1) % 2)
+const reducer = (state, action) => {
+  switch (action.type) {
+    case SET_CHOICE: {
+      const { board, currentPlayer } = action
+      const {
+        isWinner,
+        isDeadlock
+      } = checkIfWineer(board)
+      return {
+        ...state,
+        board,
+        winner: isWinner ? state.currentPlayer : '',
+        deadlock: isDeadlock,
+        currentPlayer
+      }
     }
-    // eslint-disable-next-line
-  }, [board])
+    case SET_DEAD_LOCK: {
+      return {
+        ...state,
+        deadlock: action.deadlock
+      }
+    }
+    case SET_CURRENT_PLAYER: {
+      return {
+        ...state,
+        currentPlayer: action.currentPlayer
+      }
+    }
+    case SET_WINNDER: {
+      return {
+        ...state,
+        winner: action.winner
+      }
+    }
+    case RESTART: {
+      return initialState
+    }
+    default:
+      throw new Error()
+  }
+}
+
+const TicTacToe = () => {
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const { board, winner, deadlock, currentPlayer } = state
+
+  const restart = () => dispatch({ type: RESTART })
 
   const setChoice = (row, column) => {
     const currentBoard = [...board]
@@ -32,7 +77,11 @@ const TicTacToe = () => {
     if (currentRow[column]) return ''
     currentRow[column] = currentPlayer.toString()
     currentBoard[row] = currentRow
-    setBoard(currentBoard)
+    dispatch({
+      type: SET_CHOICE,
+      board: currentBoard,
+      currentPlayer: ((currentPlayer + 1) % 2)
+    })
   }
 
   return (
@@ -50,8 +99,41 @@ const TicTacToe = () => {
         })
       }
       {winner && (
-        <Modal>
-          <h1>{`Player ${currentPlayer + 1} won the game!`}</h1>
+        <Modal actions={[
+          {
+            label: 'Restart',
+            handleButtonClick: () => restart()
+          },
+          {
+            label: 'End Game',
+            type: 'distroy',
+            handleButtonClick: () => window.close()
+          }
+        ]}
+        >
+          <h1>Winner!</h1>
+          <p>
+            Player {currentPlayer} won this game!! <strong>congratulations!!</strong>
+          </p>
+        </Modal>
+      )}
+      {deadlock && (
+        <Modal actions={[
+          {
+            label: 'Restart',
+            handleButtonClick: () => restart()
+          },
+          {
+            label: 'End Game',
+            type: 'distroy',
+            handleButtonClick: () => window.close()
+          }
+        ]}
+        >
+          <h1>Draw!</h1>
+          <p>
+              No one can win this game
+          </p>
         </Modal>
       )}
     </div>

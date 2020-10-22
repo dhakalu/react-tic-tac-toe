@@ -17,5 +17,22 @@ const checkColumns = (board) => {
 }
 
 export const checkIfWineer = (board) => {
-  return checkRow(board) || checkColumns(board)
+  const isWinner = checkRow(board) || checkColumns(board)
+  let isDeadlock = false
+  if (!isWinner) {
+    let nonZero = 0
+    for (let i = 0; i <= 2; i++) {
+      for (let j = 0; j <= 2; j++) {
+        if (board[i][j]) {
+          nonZero += 1
+        }
+      }
+    }
+    console.log(nonZero)
+    isDeadlock = nonZero >= 9
+  }
+  return {
+    isWinner,
+    isDeadlock
+  }
 }
