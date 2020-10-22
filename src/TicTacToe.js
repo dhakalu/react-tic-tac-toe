@@ -23,6 +23,7 @@ const TicTacToe = () => {
     } else {
       setCurrentPlayer((currentPlayer + 1) % 2)
     }
+    // eslint-disable-next-line
   }, [board])
 
   const setChoice = (row, column) => {
