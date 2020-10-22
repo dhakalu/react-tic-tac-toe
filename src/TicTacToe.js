@@ -25,17 +25,22 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case SET_CHOICE: {
-      const { board, currentPlayer } = action
+      const { row, column } = action
+      const currentBoard = [...state.board]
+      const currentRow = [...currentBoard[row]]
+      if (currentRow[column]) return ''
+      currentRow[column] = `${state.currentPlayer}`
+      currentBoard[row] = currentRow
       const {
         isWinner,
         isDeadlock
-      } = checkIfWineer(board)
+      } = checkIfWineer(currentBoard)
       return {
         ...state,
-        board,
+        board: currentBoard,
         winner: isWinner ? state.currentPlayer : '',
         deadlock: isDeadlock,
-        currentPlayer
+        currentPlayer: (state.currentPlayer + 1) % 2
       }
     }
     case SET_DEAD_LOCK: {
@@ -72,15 +77,10 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
   const restart = () => dispatch({ type: RESTART })
 
   const setChoice = (row, column) => {
-    const currentBoard = [...board]
-    const currentRow = [...currentBoard[row]]
-    if (currentRow[column]) return ''
-    currentRow[column] = currentPlayer.toString()
-    currentBoard[row] = currentRow
     dispatch({
       type: SET_CHOICE,
-      board: currentBoard,
-      currentPlayer: ((currentPlayer + 1) % 2)
+      row,
+      column
     })
   }
 
