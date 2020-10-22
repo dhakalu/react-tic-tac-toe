@@ -11,17 +11,24 @@ const Tile = ({ item, id, onTileClick }) => {
     }
   }
 
+  const classNames = []
+
+  if (item) {
+    classNames.push(item === '0' ? 'first' : 'second')
+  }
   return (
     <TileWrapper
-      className={item ? 'rotate' : ''}
+      className={classNames.join(' ')}
       onClick={() => onTileClick(id)}
       role='button'
       tabIndex={0}
       onKeyPress={handleKeyPress}
     >
-      {
-        item && <Avatar choice={item}>{item}</Avatar>
-      }
+      <div>
+        {
+          item && <Avatar choice={item}>{item}</Avatar>
+        }
+      </div>
     </TileWrapper>
   )
 }

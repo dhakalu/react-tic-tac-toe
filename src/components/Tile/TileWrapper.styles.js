@@ -1,11 +1,13 @@
 import styled, { keyframes } from 'styled-components'
 
 const rotate = keyframes`
-from {
+0% {
   transform: rotateY(0deg);
+  background-color: blue;
 }
-to {
+100% {
   rotateY(180deg);
+  background-color: green;
 }
 `
 export default styled.div`
@@ -17,16 +19,30 @@ export default styled.div`
     align-items: center;
     background-color: #222222;
     &:hover {
-        background-color: #7E7E7E;
+        background-color: #000;
         cursor: pointer;
     }
 
+    outline: none;
+    
     &:nth-child(2){
       border-left: 4px solid #7E7E7E;
       border-right: 4px solid #7E7E7E;
     }
 
-  &.rotate{
-    animation: ${rotate} 1s;
-  }
+    
+    transition: transform 0.6s;
+    transition: background-color 0.6s;
+    transform-style: preserve-3d;
+    &.rotate{
+      transform: rotateY(180deg);
+    }
+
+    &.first{
+      background-color: green;
+    }
+
+    &.second {
+      background-color: red;
+    }
 `

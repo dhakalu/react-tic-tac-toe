@@ -1,10 +1,10 @@
-import styled from 'styled-components' 
+import styled from 'styled-components'
 
 const backgroundColors = {
-    none: '#fff',
-    0: 'green',
-    1: 'red'
-  }
+  none: '#fff',
+  0: 'green',
+  1: 'red'
+}
 
 export default styled.div`
     font-size: 72px;
