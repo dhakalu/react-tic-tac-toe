@@ -28,7 +28,7 @@ const reducer = (state, action) => {
       const { row, column } = action
       const currentBoard = [...state.board]
       const currentRow = [...currentBoard[row]]
-      if (currentRow[column]) return ''
+      if (currentRow[column]) return state
       currentRow[column] = `${state.currentPlayer}`
       currentBoard[row] = currentRow
       const {
