@@ -22,7 +22,11 @@ const initialState = {
   board: initalBoard,
   winner: '',
   currentPlayer: 0,
-  deadlock: false
+  deadlock: false,
+  invalidMoveMessage: '',
+  invalidMovePosition: [-1, -1],
+  resultTitle: '',
+  resultMessage: ''
 }
 
 const reducer = (state, action) => {
@@ -114,7 +118,8 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
     invalidMoveMessage,
     invalidMovePosition,
     resultTitle,
-    resultMessage
+    resultMessage,
+    playerNames = {}
   } = state
 
   useEffect(() => {
@@ -139,20 +144,37 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
   useEffect(() => {
     let title = ''
     let message = ''
-    if (mode === MODES.COMPUTER && currentPlayer === 1) {
+    if (mode === MODES.COMPUTER && currentPlayer === 1 && winner) {
       title = 'You lost!'
       message = 'Opps, Try agein!'
-    } else if (mode === MODES.COMPUTER && currentPlayer === 0) {
+    } else if (mode === MODES.COMPUTER && currentPlayer === 0 && winner) {
       title = 'You won!'
       message = 'Congratulations!'
+    } else if (winner) {
+      title = `${playerNames[currentPlayer] || `Player ${currentPlayer}`} won!`
+      message = 'Congrationations!'
     }
-    dispatch({
-      type: SET_WIN_DIALOGUE,
-      title,
-      message
-    })
+    setTimeout(() => {
+      dispatch({
+        type: SET_WIN_DIALOGUE,
+        title,
+        message
+      })
+    }, 500)
     // eslint-disable-next-line
   }, [winner])
+
+  useEffect(() => {
+    if (deadlock) {
+      setTimeout(() => {
+        dispatch({
+          type: SET_WIN_DIALOGUE,
+          title: 'Draw!',
+          message: 'No one could win this game!'
+        })
+      }, 500)
+    }
+  }, [deadlock])
 
   const setPlayerNames = (firstPlayerName, secondPlayerName) => dispatch({
     type: SET_PAYER_NAMES,
@@ -214,19 +236,11 @@ const TicTacToe = ({ mode, onEndGame = () => false }) => {
           )
         })
       }
-      {winner && (
+      {resultTitle && (
         <Modal actions={modalActions}>
           <h1>{resultTitle}</h1>
           <p>
             <strong>{resultMessage}</strong>
-          </p>
-        </Modal>
-      )}
-      {deadlock && (
-        <Modal actions={modalActions}>
-          <h1>Draw!</h1>
-          <p>
-              No one can win this game
           </p>
         </Modal>
       )}
