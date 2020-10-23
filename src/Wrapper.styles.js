@@ -5,7 +5,7 @@ export default styled.div`
     overflow: hidden;
     display: flex;
     flex: 1;
-    background-color: rgba(0, 0, 0, 1);
+    background-color: #282828;
     justify-content: center;
     align-items: center;
 `
