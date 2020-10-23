@@ -7,4 +7,5 @@ export default styled.div`
     flex: 1;
     background-color: rgba(0, 0, 0, 1);
     justify-content: center;
+    align-items: center;
 `
